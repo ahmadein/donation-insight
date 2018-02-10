@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 def read_filter_with_pandas(filename, df_index_to_keep):
     df = pd.read_csv(filename, delimiter='|', header=None)
@@ -11,8 +10,8 @@ filename='../input/itcont_example.txt'
 df_index_to_keep =[0,7,10,13,14,15]
 columns_header = {'CMTE_ID': 0, 'NAME': 7, 'ZIP_CODE': 10, 'TRANSACTION_DT': 13, 'TRANSACTION_AMT': 14, 'OTHER_ID': 15}
 #df = read_filter_with_pandas(filename, df_index_to_keep)
-cmte_id_dict=[]
-donor_list = []
+cmte_id_dict={}
+donor_list = {}
 with open(filename) as f:
     for line in f:
         data_txt=line.split('|')
@@ -21,10 +20,18 @@ with open(filename) as f:
                 data_txt[columns_header['TRANSACTION_AMT']]=='' or data_txt[columns_header['OTHER_ID']]!=''):
             continue
         filtered_data=[data_txt[i] for i in df_index_to_keep]
-        filtered_data[3] = filtered_data[3][:5] # first 5 charachters of zip code
-        uniq_donor_id = uniq_donor_id = filtered_data[1]+filtered_data[3]
-        if(uniq_donor_id not in donor_list):
-            donor_list.append(uniq_donor_id)
+        filtered_data[2] = filtered_data[2][:5] # first 5 charachters of zip code
+        zip_code=filtered_data[2]
+        uniq_donor_id = uniq_donor_id = filtered_data[1]+filtered_data[2]
+        year = int(filtered_data[3][-4:])
+        if uniq_donor_id not in donor_list:
+            donor_list[uniq_donor_id] = year
             continue
-        else:
-            data_txt
+        elif year >= donor_list[uniq_donor_id]:
+            donor_list[uniq_donor_id] = year #repeated donor found and year is in order
+            try:
+                _element = cmte_id_dict[zip_code[year]] # test if a record for same tuple (committee, zip, year) exist
+            except IndexError:
+                cmte_id_dict[filtered_data[0]] = {zip_code: {year: {'value': int(filtered_data[4]), 'repeated': 1}}}
+                # write in the file for the first record found
+                continue
