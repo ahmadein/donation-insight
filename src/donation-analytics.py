@@ -1,17 +1,8 @@
-import csv
-'''
-import pandas as pd
-def read_filter_with_pandas(filename, df_index_to_keep):
-    df = pd.read_csv(filename, delimiter='|', header=None)
-    df_filtered = df[df_index_to_keep]
-    return df_filtered
-'''
-
-filename = '../input/itcont_example.txt'
+filename = '../input/itcont.txt'
 out_file_name = '../output/repeat_donors.txt'
-df_index_to_keep =[0,7,10,13,14,15]
 columns_header = {'CMTE_ID': 0, 'NAME': 7, 'ZIP_CODE': 10, 'TRANSACTION_DT': 13, 'TRANSACTION_AMT': 14, 'OTHER_ID': 15}
-#df = read_filter_with_pandas(filename, df_index_to_keep)
+df_index_to_keep =[columns_header['CMTE_ID'], columns_header['NAME'], columns_header['ZIP_CODE'], columns_header['TRANSACTION_DT'], columns_header['TRANSACTION_AMT'],columns_header['OTHER_ID']]
+# 0,7,10,13,14,15
 cmte_id_dict={}
 donor_list = {}
 line_number = 0
@@ -19,6 +10,9 @@ foutobj = open(out_file_name,'w')
 with open(filename) as f:
     for line in f:
         line_number +=1
+        if line_number%10000==0:
+            print('processing line number ' + str(line_number))
+
         data_txt=line.split('|')
         if(data_txt[columns_header['CMTE_ID']]=='' or data_txt[columns_header['NAME']]=='' or data_txt[columns_header['ZIP_CODE']]==''
             or len(data_txt[columns_header['ZIP_CODE']])<5 or data_txt[columns_header['TRANSACTION_DT']]=='' or
