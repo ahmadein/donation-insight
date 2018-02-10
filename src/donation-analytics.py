@@ -1,4 +1,6 @@
-filename = '../input/itcont.txt'
+import numpy as np
+filename = '../input/itcont_example.txt'
+percentile_filename = '../input/percentile.txt'
 out_file_name = '../output/repeat_donors.txt'
 columns_header = {'CMTE_ID': 0, 'NAME': 7, 'ZIP_CODE': 10, 'TRANSACTION_DT': 13, 'TRANSACTION_AMT': 14, 'OTHER_ID': 15}
 df_index_to_keep =[columns_header['CMTE_ID'], columns_header['NAME'], columns_header['ZIP_CODE'], columns_header['TRANSACTION_DT'], columns_header['TRANSACTION_AMT'],columns_header['OTHER_ID']]
@@ -7,6 +9,8 @@ cmte_id_dict={}
 donor_list = {}
 line_number = 0
 foutobj = open(out_file_name,'w')
+with open(percentile_filename, 'r') as f:
+    percentile_value = int(f.read())
 with open(filename) as f:
     for line in f:
         line_number +=1
