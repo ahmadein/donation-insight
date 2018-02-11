@@ -1,15 +1,23 @@
 import numpy as np
-filename = './input/itcont.txt'
-percentile_filename = './input/percentile.txt'
-out_file_name = './output/repeat_donors.txt'
-columns_header = {'CMTE_ID': 0, 'NAME': 7, 'ZIP_CODE': 10, 'TRANSACTION_DT': 13, 'TRANSACTION_AMT': 14, 'OTHER_ID': 15}
+import argparse
+# parse command line arguments
+parser = argparse.ArgumentParser()
+parser.add_argument("-in", "--input_file", metavar="FILE NAME", required=False, default= './input/itcont_example.txt', help="enter input file path")
+parser.add_argument("-per", "--percentile_file", metavar="FILE NAME", required=False, default= './input/percentile.txt', help="enter percentile file path")
+parser.add_argument("-out", "--out_file", metavar="FILE NAME", required=False, default= './output/repeat_donors.txt', help="enter output file path")
+args = parser.parse_args()
+print(args)
+filename = args.input_file
+percentile_filename = args.percentile_file
+out_file_name = args.out_file
+columns_header = {'CMTE_ID': 0, 'NAME': 7, 'ZIP_CODE': 10, 'TRANSACTION_DT': 13, 'TRANSACTION_AMT': 14, 'OTHER_ID': 15} # default dictionary for which columns to read
 df_index_to_keep =[columns_header['CMTE_ID'], columns_header['NAME'], columns_header['ZIP_CODE'], columns_header['TRANSACTION_DT'], columns_header['TRANSACTION_AMT'],columns_header['OTHER_ID']]
-# 0,7,10,13,14,15
+# order of processing by default 0,7,10,13,14,15
 cmte_id_dict={}
 donor_list = {}
 line_number = 0
-foutobj = open(out_file_name,'w')
-with open(percentile_filename, 'r') as f:
+foutobj = open(out_file_name,'w') # open out file and get it ready for reading
+with open(percentile_filename, 'r') as f: # get the percentile value to be calculated
     percentile_value = int(f.read())
 with open(filename) as f:
     for line in f:
