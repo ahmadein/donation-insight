@@ -2,9 +2,9 @@ import numpy as np
 import argparse
 # parse command line arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("-in", "--input_file", metavar="FILE NAME", required=False, default='./input/itcont_example.txt', help="enter input file path")
-parser.add_argument("-per", "--percentile_file", metavar="FILE NAME", required=False, default='./input/percentile.txt', help="enter percentile file path")
-parser.add_argument("-out", "--out_file", metavar="FILE NAME", required=False, default='./output/repeat_donors.txt', help="enter output file path")
+parser.add_argument("-in", "--input_file", metavar="FILE NAME", required=False, default='../input/itcont.txt', help="enter input file path")
+parser.add_argument("-per", "--percentile_file", metavar="FILE NAME", required=False, default='../input/percentile.txt', help="enter percentile file path")
+parser.add_argument("-out", "--out_file", metavar="FILE NAME", required=False, default='../output/repeat_donors.txt', help="enter output file path")
 args = parser.parse_args()
 print(args)
 filename = args.input_file
@@ -32,6 +32,7 @@ with open(filename) as f:
             continue  # if line is invalid or other ID has value, get the next line
         filtered_data = [data_txt[i] for i in df_index_to_keep]
         filtered_data[2] = filtered_data[2][:5]  # first 5 charachters of zip code
+        filtered_data[4] = round(float(filtered_data[4]))
         zip_code = filtered_data[2]
         uniq_donor_id = filtered_data[1]+zip_code  # combine donor name and zipcode to form unique donor id
         year = int(filtered_data[3][-4:])
@@ -43,17 +44,15 @@ with open(filename) as f:
             try:
                 _element = cmte_id_dict[filtered_data[0]][zip_code][year]  # test if a record for same triplets (committee, zip, year) exist
             except KeyError:
-                cmte_id_dict[filtered_data[0]] = {zip_code: {year: {'value': int(filtered_data[4]), 'repeated': 1}}}  # initialize
+                cmte_id_dict[filtered_data[0]] = {zip_code: {year: {'value': [filtered_data[4]], 'repeated': 1}}}  # initialize
                 data_to_write = [filtered_data[0], zip_code, year, np.percentile(cmte_id_dict[filtered_data[0]][zip_code][year]['value'], percentile_value, interpolation='nearest'),
-                                 cmte_id_dict[filtered_data[0]][zip_code][year]['value'], cmte_id_dict[filtered_data[0]][zip_code][year]['repeated']]
+                                 cmte_id_dict[filtered_data[0]][zip_code][year]['value'][0], cmte_id_dict[filtered_data[0]][zip_code][year]['repeated']]
                 foutobj.write('|'.join(str(i) for i in data_to_write)+'\n')  # write in the file for the first record found
                 continue
-            cmte_id_dict[filtered_data[0]][zip_code][year]['value'] = [cmte_id_dict[filtered_data[0]][zip_code][year]['value'], int(filtered_data[4])]  # add donation value to list of existing donations
+            cmte_id_dict[filtered_data[0]][zip_code][year]['value'].append(filtered_data[4])  # add donation value to list of existing donations
             cmte_id_dict[filtered_data[0]][zip_code][year]['repeated'] += 1
             data_to_write = [filtered_data[0], zip_code, year, np.percentile(cmte_id_dict[filtered_data[0]][zip_code][year]['value'], percentile_value, interpolation='nearest'),
-                             np.sum(cmte_id_dict[filtered_data[0]][zip_code][year]['value']), cmte_id_dict[filtered_data[0]][zip_code][year]['repeated']]
+                             int(np.sum(cmte_id_dict[filtered_data[0]][zip_code][year]['value'])), cmte_id_dict[filtered_data[0]][zip_code][year]['repeated']]
             foutobj.write('|'.join(str(i) for i in data_to_write)+'\n')
 foutobj.close()
 print('done with number of line ' + str(line_number))
-
-
