@@ -1,9 +1,9 @@
 # Table of Contents
-1. [Project Summary](README.md#Insight-Donation-Analysis)
+1. [Project Summary](README.md#insight-donation-analysis)
 2. [Details of Implementation](README.md#details-of-implementation)
 3. [Getting Started](README.md#getting-started)
 4. [Prerequisites](README.md#prerequisites)
-5. [Dependencies](README.md#Dependencies)
+5. [Dependencies](README.md#dependencies)
 6. [How to Run](README.md#how-to-run)
 7. [Running the tests](README.md#running-the-tests)
 
