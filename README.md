@@ -2,10 +2,10 @@
 1. [Project Summary](README.md#Insight-Donation-Analysis)
 2. [Details of Implementation](README.md#details-of-implementation)
 3. [Getting Started](README.md#getting-started)
-4. [Prerequisites](README.md#pre)
-5. [Dependencies](README.md#dep)
-6. [How to Run](README.md#run)
-7. [Running the tests](README.md#testing)
+4. [Prerequisites](README.md#prerequisites)
+5. [Dependencies](README.md#Dependencies)
+6. [How to Run](README.md#how-to-run)
+7. [Running the tests](README.md#running-the-tests)
 
 # Insight Donation Analysis
 
